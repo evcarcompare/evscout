@@ -3,6 +3,6 @@ import { defineConfig } from 'astro/config';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://ownwebsitecreate.github.io',
+  site: 'https://evcarcompare.github.io',
   base: '/evscout',
 });
