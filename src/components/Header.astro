@@ -1,0 +1,166 @@
+---
+const navLinks = [
+  { name: 'All EVs', href: '/cars' },
+  { name: 'Compare', href: '/compare' },
+  { name: 'Best EVs', href: '/best' },
+  { name: 'About', href: '/about' },
+];
+
+const currentPath = Astro.url.pathname;
+---
+
+<header class="header">
+  <div class="container header-inner">
+    <a href="/" class="logo">
+      <span class="logo-icon">EV</span>
+      <span class="logo-text">EV<span class="highlight">Scout</span></span>
+    </a>
+
+    <nav class="nav-desktop">
+      {navLinks.map(link => (
+        <a
+          href={link.href}
+          class:list={["nav-link", { active: currentPath.startsWith(link.href) }]}
+        >
+          {link.name}
+        </a>
+      ))}
+    </nav>
+
+    <div class="header-actions">
+      <a href="/cars" class="btn btn-primary btn-sm">Find Your EV</a>
+      <button class="menu-toggle" aria-label="Toggle menu" id="menuToggle">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M3 12h18M3 6h18M3 18h18"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <nav class="nav-mobile" id="mobileNav">
+    {navLinks.map(link => (
+      <a href={link.href} class="nav-link-mobile">{link.name}</a>
+    ))}
+  </nav>
+</header>
+
+<style>
+  .header {
+    background: rgba(17, 17, 40, 0.95);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(12px);
+  }
+
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 70px;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 900;
+    font-size: 1.3rem;
+  }
+
+  .logo-icon {
+    background: var(--accent);
+    color: var(--bg-primary);
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 900;
+  }
+
+  .highlight {
+    color: var(--accent);
+  }
+
+  .nav-desktop {
+    display: flex;
+    gap: 6px;
+  }
+
+  .nav-link {
+    padding: 8px 18px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    transition: all 0.2s;
+  }
+
+  .nav-link:hover,
+  .nav-link.active {
+    color: var(--text-primary);
+    background: var(--bg-hover);
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .btn-sm {
+    padding: 8px 18px;
+    font-size: 0.85rem;
+  }
+
+  .menu-toggle {
+    display: none;
+    padding: 10px;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    border-radius: 8px;
+  }
+
+  .nav-mobile {
+    display: none;
+    padding: 12px 20px;
+    border-top: 1px solid var(--border);
+  }
+
+  .nav-mobile.open {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .nav-link-mobile {
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    transition: all 0.2s;
+  }
+
+  .nav-link-mobile:hover {
+    color: var(--text-primary);
+    background: var(--bg-hover);
+  }
+
+  @media (max-width: 768px) {
+    .nav-desktop { display: none; }
+    .btn-primary { display: none; }
+    .menu-toggle { display: block; }
+  }
+</style>
+
+<script>
+  const toggle = document.getElementById('menuToggle');
+  const nav = document.getElementById('mobileNav');
+  toggle?.addEventListener('click', () => nav?.classList.toggle('open'));
+</script>

@@ -1,0 +1,183 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Hero from '../components/Hero.astro';
+import CarCard from '../components/CarCard.astro';
+import cars from '../data/cars.json';
+
+const featured = cars.filter(c => c.featured);
+const cheapest = [...cars].sort((a, b) => a.priceUSD - b.priceUSD).slice(0, 4);
+const longestRange = [...cars].sort((a, b) => b.rangeMiles - a.rangeMiles).slice(0, 4);
+
+const categories = [
+  { name: 'Sedans', slug: 'sedan', icon: '🚗', count: cars.filter(c => c.category === 'sedan').length },
+  { name: 'SUVs', slug: 'suv', icon: '🚙', count: cars.filter(c => c.category === 'suv').length },
+  { name: 'Trucks', slug: 'truck', icon: '🛻', count: cars.filter(c => c.category === 'truck').length },
+  { name: 'Luxury', slug: 'luxury', icon: '✨', count: cars.filter(c => c.category === 'luxury').length },
+];
+---
+
+<Layout title="EVScout - Compare Electric Vehicles Side-by-Side">
+  <Header slot="header" />
+  <Hero />
+
+  <section class="container section">
+    <h2 class="section-title">Browse by <span class="highlight">Category</span></h2>
+    <div class="cat-grid">
+      {categories.map(cat => (
+        <a href={`/cars?category=${cat.slug}`} class="cat-card">
+          <span class="cat-icon">{cat.icon}</span>
+          <h3>{cat.name}</h3>
+          <p>{cat.count} vehicles</p>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="container section">
+    <h2 class="section-title">Featured <span class="highlight">EVs</span></h2>
+    <div class="cars-grid">
+      {featured.map(car => <CarCard {...car} />)}
+    </div>
+  </section>
+
+  <section class="container section">
+    <div class="two-col">
+      <div>
+        <h2 class="section-title">Most <span class="highlight">Affordable</span></h2>
+        <div class="rank-list">
+          {cheapest.map((car, i) => (
+            <a href={`/car/${car.id}`} class="rank-item">
+              <span class="rank-num">#{i + 1}</span>
+              <div class="rank-info">
+                <span class="rank-name">{car.brand} {car.model}</span>
+                <span class="rank-detail">${car.priceUSD.toLocaleString('en-US')}</span>
+              </div>
+              <span class="rank-stat">{car.rangeMiles} mi</span>
+            </a>
+          ))}
+        </div>
+      </div>
+      <div>
+        <h2 class="section-title">Longest <span class="highlight">Range</span></h2>
+        <div class="rank-list">
+          {longestRange.map((car, i) => (
+            <a href={`/car/${car.id}`} class="rank-item">
+              <span class="rank-num">#{i + 1}</span>
+              <div class="rank-info">
+                <span class="rank-name">{car.brand} {car.model}</span>
+                <span class="rank-detail">{car.rangeMiles} miles</span>
+              </div>
+              <span class="rank-stat">${car.priceUSD.toLocaleString('en-US')}</span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="container section">
+    <div class="cta-box">
+      <h2>Can't Decide? Compare Side-by-Side</h2>
+      <p>Pick any two EVs and see every spec compared in one view.</p>
+      <a href="/compare" class="btn btn-primary">Start Comparing</a>
+    </div>
+  </section>
+
+  <Footer slot="footer" />
+</Layout>
+
+<style>
+  .section { padding: 60px 0 0; }
+
+  .cat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+  }
+
+  .cat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px 20px;
+    text-align: center;
+    transition: all 0.3s;
+  }
+
+  .cat-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow);
+  }
+
+  .cat-icon { font-size: 2.2rem; display: block; margin-bottom: 8px; }
+  .cat-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 4px; }
+  .cat-card p { font-size: 0.85rem; color: var(--text-secondary); }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+  }
+
+  .rank-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .rank-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    transition: all 0.2s;
+  }
+
+  .rank-item:hover {
+    border-color: var(--accent);
+    background: var(--bg-hover);
+  }
+
+  .rank-num {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--accent);
+    min-width: 30px;
+  }
+
+  .rank-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .rank-name { font-weight: 600; font-size: 0.95rem; }
+  .rank-detail { font-size: 0.8rem; color: var(--text-secondary); }
+  .rank-stat { font-weight: 700; font-size: 0.9rem; color: var(--text-secondary); }
+
+  .cta-box {
+    background: linear-gradient(135deg, var(--bg-card), var(--bg-secondary));
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 50px;
+    text-align: center;
+  }
+
+  .cta-box h2 { font-size: 2rem; font-weight: 800; margin-bottom: 12px; }
+  .cta-box p { color: var(--text-secondary); margin-bottom: 24px; font-size: 1.05rem; }
+
+  .highlight { color: var(--accent); }
+
+  @media (max-width: 768px) {
+    .cat-grid { grid-template-columns: repeat(2, 1fr); }
+    .two-col { grid-template-columns: 1fr; }
+    .cta-box { padding: 30px 20px; }
+  }
+</style>

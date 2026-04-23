@@ -1,0 +1,107 @@
+<section class="hero">
+  <div class="container">
+    <div class="hero-content">
+      <span class="badge badge-green hero-badge">The Smarter Way to Choose an EV</span>
+      <h1>Find Your Perfect <span class="highlight">Electric Vehicle</span></h1>
+      <p class="hero-subtitle">
+        Compare range, price, charging speed, and specs across every major EV. Side-by-side comparisons to help you make the right choice.
+      </p>
+      <div class="hero-actions">
+        <a href="/cars" class="btn btn-primary">Browse All EVs</a>
+        <a href="/compare" class="btn btn-outline">Compare Side-by-Side</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat">
+          <span class="stat-value">15+</span>
+          <span class="stat-label">EVs Compared</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value">50+</span>
+          <span class="stat-label">Specs Tracked</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value">4</span>
+          <span class="stat-label">Categories</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    padding: 80px 0 70px;
+    background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .hero-content {
+    max-width: 720px;
+    text-align: center;
+    margin: 0 auto;
+  }
+
+  .hero-badge {
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-size: 3.2rem;
+    font-weight: 900;
+    line-height: 1.15;
+    margin-top: 16px;
+    margin-bottom: 20px;
+    letter-spacing: -0.03em;
+  }
+
+  .highlight {
+    color: var(--accent);
+  }
+
+  .hero-subtitle {
+    font-size: 1.15rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 36px;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 56px;
+  }
+
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 56px;
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .stat-value {
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--accent);
+  }
+
+  .stat-label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+  }
+
+  @media (max-width: 768px) {
+    .hero { padding: 50px 0 40px; }
+    h1 { font-size: 2.1rem; }
+    .hero-subtitle { font-size: 1rem; }
+    .hero-stats { gap: 30px; }
+    .stat-value { font-size: 1.5rem; }
+  }
+</style>

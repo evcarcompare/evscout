@@ -1,0 +1,156 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import CarCard from '../components/CarCard.astro';
+import cars from '../data/cars.json';
+
+const bestOverall = cars.find(c => c.bestFor === 'Best Overall Value')!;
+const bestRange = [...cars].sort((a, b) => b.rangeMiles - a.rangeMiles)[0];
+const bestBudget = [...cars].sort((a, b) => a.priceUSD - b.priceUSD)[0];
+const fastestCharging = [...cars].sort((a, b) => a.fastChargeMins - b.fastChargeMins)[0];
+const fastestAccel = [...cars].sort((a, b) => a.acceleration060 - b.acceleration060)[0];
+const bestFamily = cars.find(c => c.seats >= 7) || cars.find(c => c.bestFor === 'Best Family SUV')!;
+const bestLuxury = cars.find(c => c.bestFor === 'Ultimate Luxury Sedan') || cars.filter(c => c.category === 'luxury').sort((a, b) => b.rating - a.rating)[0];
+const bestTruck = cars.filter(c => c.category === 'truck').sort((a, b) => b.rating - a.rating)[0];
+
+const awards = [
+  { title: 'Best Overall Value', car: bestOverall, reason: 'Best balance of price, range, and features.' },
+  { title: 'Longest Range', car: bestRange, reason: `${bestRange.rangeMiles} miles on a single charge — furthest you can go.` },
+  { title: 'Most Affordable', car: bestBudget, reason: `Starting at $${bestBudget.priceUSD.toLocaleString('en-US')} — lowest entry price.` },
+  { title: 'Fastest Charging', car: fastestCharging, reason: `10-80% in just ${fastestCharging.fastChargeMins} minutes with DC fast charging.` },
+  { title: 'Fastest Acceleration', car: fastestAccel, reason: `0-60 mph in ${fastestAccel.acceleration060} seconds — EV speed at its finest.` },
+  { title: 'Best for Families', car: bestFamily, reason: `${bestFamily.seats} seats with ${bestFamily.cargoLiters}L of cargo space.` },
+  { title: 'Best Luxury EV', car: bestLuxury, reason: 'Premium materials, cutting-edge tech, and ultimate comfort.' },
+  { title: 'Best EV Truck', car: bestTruck, reason: 'Utility meets electric — towing, hauling, and zero emissions.' },
+];
+---
+
+<Layout title="Best Electric Vehicles 2026 - EVScout">
+  <Header slot="header" />
+
+  <section class="page-hero">
+    <div class="container">
+      <h1>Best EVs of <span class="highlight">2026</span></h1>
+      <p>Our top picks across every category — from budget to luxury, sedans to trucks.</p>
+    </div>
+  </section>
+
+  <section class="container awards-section">
+    {awards.map(award => (
+      <div class="award-block">
+        <div class="award-label">
+          <span class="award-icon">&#9733;</span>
+          <h2>{award.title}</h2>
+        </div>
+        <div class="award-content">
+          <div class="award-card-wrap">
+            <CarCard {...award.car} />
+          </div>
+          <div class="award-detail">
+            <h3>{award.car.brand} {award.car.model}</h3>
+            <p class="award-reason">{award.reason}</p>
+            <div class="award-specs">
+              <div><strong>${award.car.priceUSD.toLocaleString('en-US')}</strong><span>Price</span></div>
+              <div><strong>{award.car.rangeMiles} mi</strong><span>Range</span></div>
+              <div><strong>{award.car.acceleration060}s</strong><span>0-60</span></div>
+              <div><strong>{award.car.fastChargeMins} min</strong><span>Fast Charge</span></div>
+            </div>
+            <a href={`/car/${award.car.id}`} class="btn btn-outline">View Full Specs</a>
+          </div>
+        </div>
+      </div>
+    ))}
+  </section>
+
+  <Footer slot="footer" />
+</Layout>
+
+<style>
+  .page-hero {
+    padding: 40px 0 30px;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border);
+    text-align: center;
+  }
+
+  h1 { font-size: 2.5rem; font-weight: 900; margin-bottom: 8px; }
+  .highlight { color: var(--accent); }
+  .page-hero p { color: var(--text-secondary); font-size: 1.05rem; }
+
+  .awards-section { padding: 40px 0 0; }
+
+  .award-block {
+    margin-bottom: 50px;
+  }
+
+  .award-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .award-icon {
+    color: var(--accent-yellow);
+    font-size: 1.5rem;
+  }
+
+  .award-label h2 {
+    font-size: 1.4rem;
+    font-weight: 800;
+  }
+
+  .award-content {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 30px;
+    align-items: start;
+  }
+
+  .award-detail {
+    padding: 20px 0;
+  }
+
+  .award-detail h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+
+  .award-reason {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+
+  .award-specs {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .award-specs div {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .award-specs strong {
+    font-size: 1rem;
+    color: var(--accent);
+  }
+
+  .award-specs span {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+  }
+
+  @media (max-width: 768px) {
+    h1 { font-size: 1.8rem; }
+    .award-content { grid-template-columns: 1fr; }
+    .award-card-wrap { max-width: 400px; }
+  }
+</style>

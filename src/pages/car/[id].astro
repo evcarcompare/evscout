@@ -1,0 +1,206 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import CarCard from '../../components/CarCard.astro';
+import cars from '../../data/cars.json';
+
+export function getStaticPaths() {
+  return cars.map(car => ({ params: { id: car.id } }));
+}
+
+const { id } = Astro.params;
+const car = cars.find(c => c.id === id)!;
+const related = cars.filter(c => c.category === car.category && c.id !== car.id).slice(0, 3);
+
+const stars = Math.round(car.rating * 2) / 2;
+const priceFormatted = car.priceUSD.toLocaleString('en-US');
+---
+
+<Layout title={`${car.brand} ${car.model} ${car.year} - EVScout`} description={`${car.brand} ${car.model} specs: ${car.rangeMiles} mi range, ${car.acceleration060}s 0-60, $${priceFormatted}. Compare with other EVs.`}>
+  <Header slot="header" />
+
+  <section class="container detail-page">
+    <nav class="breadcrumb">
+      <a href="/">Home</a><span>/</span>
+      <a href="/cars">All EVs</a><span>/</span>
+      <span>{car.brand} {car.model}</span>
+    </nav>
+
+    <div class="detail-layout">
+      <div class="detail-image">
+        <div class="image-wrapper">
+          <img src={car.image} alt={`${car.brand} ${car.model}`} />
+          {car.bestFor && <span class="badge badge-green best-badge">{car.bestFor}</span>}
+        </div>
+      </div>
+
+      <div class="detail-info">
+        <span class="badge badge-category" style="text-transform:capitalize;">{car.category}</span>
+        <h1>{car.brand} {car.model} <span class="year">{car.year}</span></h1>
+
+        <div class="rating-row">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <span class:list={["star-icon", { filled: i < Math.round(stars) }]}>&#9733;</span>
+          ))}
+          <span class="rating-num">{car.rating} / 5.0</span>
+        </div>
+
+        <div class="price-box">
+          <span class="price">${priceFormatted}</span>
+          <span class="price-label">Starting MSRP</span>
+        </div>
+
+        <div class="specs-main">
+          <div class="spec-item">
+            <span class="spec-val">{car.rangeMiles} mi</span>
+            <span class="spec-lbl">Range</span>
+          </div>
+          <div class="spec-item">
+            <span class="spec-val">{car.acceleration060}s</span>
+            <span class="spec-lbl">0-60 mph</span>
+          </div>
+          <div class="spec-item">
+            <span class="spec-val">{car.fastChargeMins} min</span>
+            <span class="spec-lbl">Fast Charge (10-80%)</span>
+          </div>
+          <div class="spec-item">
+            <span class="spec-val">{car.horsePower} hp</span>
+            <span class="spec-lbl">Horsepower</span>
+          </div>
+        </div>
+
+        <a href="/compare" class="btn btn-primary">Compare with Another EV</a>
+      </div>
+    </div>
+
+    <div class="full-specs">
+      <h2 class="section-title">Full <span class="highlight">Specifications</span></h2>
+      <div class="specs-table">
+        <div class="spec-row"><span>Brand</span><span>{car.brand}</span></div>
+        <div class="spec-row"><span>Model</span><span>{car.model}</span></div>
+        <div class="spec-row"><span>Year</span><span>{car.year}</span></div>
+        <div class="spec-row"><span>Category</span><span style="text-transform:capitalize;">{car.category}</span></div>
+        <div class="spec-row"><span>Price (MSRP)</span><span>${priceFormatted}</span></div>
+        <div class="spec-row"><span>Range</span><span>{car.rangeMiles} miles / {car.rangeKm} km</span></div>
+        <div class="spec-row"><span>Battery</span><span>{car.batteryKWh} kWh</span></div>
+        <div class="spec-row"><span>Charging Time (Level 2)</span><span>{car.chargingTimeHrs} hours</span></div>
+        <div class="spec-row"><span>DC Fast Charge (10-80%)</span><span>{car.fastChargeMins} minutes</span></div>
+        <div class="spec-row"><span>0-60 mph</span><span>{car.acceleration060} seconds</span></div>
+        <div class="spec-row"><span>Top Speed</span><span>{car.topSpeedMph} mph</span></div>
+        <div class="spec-row"><span>Horsepower</span><span>{car.horsePower} hp</span></div>
+        <div class="spec-row"><span>Torque</span><span>{car.torqueNm} Nm</span></div>
+        <div class="spec-row"><span>Drive Type</span><span>{car.driveType}</span></div>
+        <div class="spec-row"><span>Seats</span><span>{car.seats}</span></div>
+        <div class="spec-row"><span>Cargo</span><span>{car.cargoLiters} liters</span></div>
+        <div class="spec-row"><span>Weight</span><span>{car.weight} kg</span></div>
+        <div class="spec-row"><span>Vehicle Warranty</span><span>{car.warranty}</span></div>
+        <div class="spec-row"><span>Battery Warranty</span><span>{car.batteryWarranty}</span></div>
+      </div>
+    </div>
+
+    <div class="pros-cons">
+      <div class="pros">
+        <h3>Pros</h3>
+        <ul>
+          {car.pros.map(p => <li><span class="icon-good">+</span> {p}</li>)}
+        </ul>
+      </div>
+      <div class="cons">
+        <h3>Cons</h3>
+        <ul>
+          {car.cons.map(c => <li><span class="icon-bad">-</span> {c}</li>)}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  {related.length > 0 && (
+    <section class="container related">
+      <h2 class="section-title">Similar <span class="highlight">EVs</span></h2>
+      <div class="cars-grid">
+        {related.map(c => <CarCard {...c} />)}
+      </div>
+    </section>
+  )}
+
+  <Footer slot="footer" />
+</Layout>
+
+<style>
+  .detail-page { padding: 30px 0 0; }
+
+  .breadcrumb {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 30px; flex-wrap: wrap;
+  }
+  .breadcrumb a { transition: color 0.2s; }
+  .breadcrumb a:hover { color: var(--accent); }
+
+  .detail-layout {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: start;
+  }
+
+  .image-wrapper {
+    position: relative; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border);
+  }
+  .image-wrapper img { width: 100%; aspect-ratio: 3/2; object-fit: cover; }
+  .best-badge { position: absolute; top: 16px; left: 16px; font-size: 0.85rem; padding: 6px 14px; }
+
+  .detail-info { display: flex; flex-direction: column; gap: 16px; }
+  h1 { font-size: 2rem; font-weight: 900; }
+  .year { color: var(--text-secondary); font-weight: 500; font-size: 1.2rem; }
+  .badge-category { width: fit-content; }
+
+  .rating-row { display: flex; align-items: center; gap: 3px; }
+  .star-icon { font-size: 1rem; color: var(--border); }
+  .star-icon.filled { color: var(--accent-yellow); }
+  .rating-num { margin-left: 8px; font-size: 0.9rem; color: var(--text-secondary); font-weight: 600; }
+
+  .price-box { display: flex; align-items: baseline; gap: 10px; }
+  .price { font-size: 2rem; font-weight: 900; color: var(--accent); }
+  .price-label { font-size: 0.9rem; color: var(--text-secondary); }
+
+  .specs-main {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 20px;
+  }
+  .spec-item { text-align: center; }
+  .spec-val { display: block; font-size: 1.2rem; font-weight: 800; color: var(--accent); }
+  .spec-lbl { display: block; font-size: 0.75rem; color: var(--text-secondary); margin-top: 2px; }
+
+  .full-specs { margin-top: 60px; }
+  .highlight { color: var(--accent); }
+
+  .specs-table {
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden;
+  }
+  .spec-row {
+    display: flex; justify-content: space-between; padding: 14px 20px;
+    border-bottom: 1px solid var(--border); font-size: 0.95rem;
+  }
+  .spec-row:last-child { border-bottom: none; }
+  .spec-row span:first-child { color: var(--text-secondary); }
+  .spec-row span:last-child { font-weight: 600; }
+
+  .pros-cons {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 40px;
+  }
+  .pros, .cons {
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px;
+  }
+  .pros h3, .cons h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 14px; }
+  .pros ul, .cons ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .pros li, .cons li { font-size: 0.9rem; display: flex; align-items: center; gap: 8px; }
+  .icon-good { color: var(--accent); font-weight: 800; font-size: 1.1rem; }
+  .icon-bad { color: var(--accent-red); font-weight: 800; font-size: 1.1rem; }
+
+  .related { padding: 60px 0 0; }
+
+  @media (max-width: 768px) {
+    .detail-layout { grid-template-columns: 1fr; gap: 30px; }
+    h1 { font-size: 1.5rem; }
+    .price { font-size: 1.6rem; }
+    .pros-cons { grid-template-columns: 1fr; }
+  }
+</style>

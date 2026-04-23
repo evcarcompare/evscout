@@ -1,0 +1,63 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout title="About - EVScout">
+  <Header slot="header" />
+
+  <section class="container about-page">
+    <h1>About <span class="highlight">EVScout</span></h1>
+
+    <div class="about-content">
+      <div class="about-section">
+        <h2>Our Mission</h2>
+        <p>
+          EVScout helps you find the perfect electric vehicle. We provide comprehensive, unbiased comparisons of every major EV — range, price, charging speed, performance, and more — so you can make an informed decision.
+        </p>
+      </div>
+
+      <div class="about-section">
+        <h2>How We Make Money</h2>
+        <p>
+          EVScout earns revenue through advertising, affiliate partnerships with dealerships, and lead generation. When you click a link to a dealer or financing partner, we may earn a commission. This never affects our rankings or recommendations — every comparison is based purely on specs and data.
+        </p>
+      </div>
+
+      <div class="about-section">
+        <h2>Our Data</h2>
+        <p>
+          All specifications are sourced from official manufacturer data and verified against independent testing where available. Prices shown are base MSRP and may vary by region, trim level, and dealer. We update our database regularly to reflect the latest models and pricing changes.
+        </p>
+      </div>
+
+      <div class="about-section">
+        <h2>Privacy Policy</h2>
+        <p>
+          We respect your privacy. We do not sell your personal information. We use analytics to improve the site experience. If you subscribe to updates, your email is used solely for EV news and you can unsubscribe anytime.
+        </p>
+      </div>
+
+      <div class="about-section">
+        <h2>Contact</h2>
+        <p>
+          Have feedback, corrections, or partnership inquiries? Reach us at <strong>hello@evscout.com</strong>.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <Footer slot="footer" />
+</Layout>
+
+<style>
+  .about-page { padding: 50px 0 0; max-width: 800px; }
+  h1 { font-size: 2.5rem; font-weight: 900; margin-bottom: 40px; }
+  .highlight { color: var(--accent); }
+  .about-content { display: flex; flex-direction: column; gap: 36px; }
+  .about-section h2 { font-size: 1.3rem; font-weight: 700; margin-bottom: 12px; }
+  .about-section p { color: var(--text-secondary); line-height: 1.8; font-size: 1rem; }
+
+  @media (max-width: 768px) { h1 { font-size: 1.8rem; } }
+</style>

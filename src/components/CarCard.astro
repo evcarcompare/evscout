@@ -1,0 +1,217 @@
+---
+interface Props {
+  id: string;
+  brand: string;
+  model: string;
+  year: number;
+  category: string;
+  priceUSD: number;
+  rangeMiles: number;
+  batteryKWh: number;
+  fastChargeMins: number;
+  acceleration060: number;
+  driveType: string;
+  image: string;
+  rating: number;
+  bestFor?: string;
+  featured?: boolean;
+}
+
+const { id, brand, model, year, category, priceUSD, rangeMiles, batteryKWh, fastChargeMins, acceleration060, driveType, image, rating, bestFor, featured } = Astro.props;
+
+const priceFormatted = priceUSD.toLocaleString('en-US');
+const stars = Math.round(rating * 2) / 2;
+---
+
+<article class="car-card">
+  <a href={`/car/${id}`} class="car-link">
+    <div class="car-image">
+      <img src={image} alt={`${brand} ${model}`} loading="lazy" />
+      {bestFor && <span class="badge badge-green best-for">{bestFor}</span>}
+      <span class="badge badge-category cat-badge">{category}</span>
+    </div>
+
+    <div class="car-content">
+      <div class="car-header">
+        <h3>{brand} {model}</h3>
+        <span class="year">{year}</span>
+      </div>
+
+      <div class="car-rating">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <span class:list={["star-icon", { filled: i < Math.round(stars) }]}>&#9733;</span>
+        ))}
+        <span class="rating-num">{rating}</span>
+      </div>
+
+      <div class="specs-grid">
+        <div class="spec">
+          <span class="spec-value">{rangeMiles} mi</span>
+          <span class="spec-label">Range</span>
+        </div>
+        <div class="spec">
+          <span class="spec-value">{acceleration060}s</span>
+          <span class="spec-label">0-60 mph</span>
+        </div>
+        <div class="spec">
+          <span class="spec-value">{fastChargeMins} min</span>
+          <span class="spec-label">Fast Charge</span>
+        </div>
+        <div class="spec">
+          <span class="spec-value">{driveType}</span>
+          <span class="spec-label">Drive</span>
+        </div>
+      </div>
+
+      <div class="car-footer">
+        <span class="price">${priceFormatted}</span>
+        <span class="price-label">Starting MSRP</span>
+      </div>
+    </div>
+  </a>
+</article>
+
+<style>
+  .car-card {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+
+  .car-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow);
+    border-color: var(--accent);
+  }
+
+  .car-link {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .car-image {
+    position: relative;
+    aspect-ratio: 3/2;
+    overflow: hidden;
+    background: var(--bg-secondary);
+  }
+
+  .car-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s;
+  }
+
+  .car-card:hover .car-image img {
+    transform: scale(1.05);
+  }
+
+  .best-for {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+  }
+
+  .cat-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    text-transform: capitalize;
+  }
+
+  .car-content {
+    padding: 18px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .car-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 8px;
+  }
+
+  h3 {
+    font-size: 1.15rem;
+    font-weight: 700;
+  }
+
+  .year {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+  }
+
+  .car-rating {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin-bottom: 16px;
+  }
+
+  .star-icon {
+    font-size: 0.85rem;
+    color: var(--border);
+  }
+
+  .star-icon.filled {
+    color: var(--accent-yellow);
+  }
+
+  .rating-num {
+    margin-left: 6px;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    font-weight: 600;
+  }
+
+  .specs-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 8px;
+    padding: 14px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 14px;
+  }
+
+  .spec {
+    text-align: center;
+  }
+
+  .spec-value {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .spec-label {
+    display: block;
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    margin-top: 2px;
+  }
+
+  .car-footer {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-top: auto;
+  }
+
+  .price {
+    font-size: 1.3rem;
+    font-weight: 800;
+  }
+
+  .price-label {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+  }
+</style>

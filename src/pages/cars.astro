@@ -1,0 +1,193 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import CarCard from '../components/CarCard.astro';
+import cars from '../data/cars.json';
+---
+
+<Layout title="All Electric Vehicles - EVScout">
+  <Header slot="header" />
+
+  <section class="page-hero">
+    <div class="container">
+      <h1>All <span class="highlight">Electric Vehicles</span></h1>
+      <p>{cars.length} EVs to explore and compare</p>
+    </div>
+  </section>
+
+  <section class="container filters-section">
+    <div class="filters">
+      <button class="filter-btn active" data-category="all">All ({cars.length})</button>
+      <button class="filter-btn" data-category="sedan">Sedans</button>
+      <button class="filter-btn" data-category="suv">SUVs</button>
+      <button class="filter-btn" data-category="truck">Trucks</button>
+      <button class="filter-btn" data-category="luxury">Luxury</button>
+    </div>
+
+    <div class="sort-row">
+      <label>Sort by:</label>
+      <select id="sortSelect">
+        <option value="featured">Featured</option>
+        <option value="price-low">Price: Low to High</option>
+        <option value="price-high">Price: High to Low</option>
+        <option value="range">Longest Range</option>
+        <option value="fastest">Fastest (0-60)</option>
+        <option value="rating">Highest Rated</option>
+      </select>
+    </div>
+  </section>
+
+  <section class="container">
+    <div class="cars-grid" id="carsGrid">
+      {cars.map(car => (
+        <div class="car-wrapper"
+          data-category={car.category}
+          data-price={car.priceUSD}
+          data-range={car.rangeMiles}
+          data-accel={car.acceleration060}
+          data-rating={car.rating}
+          data-featured={car.featured ? '1' : '0'}
+        >
+          <CarCard {...car} />
+        </div>
+      ))}
+    </div>
+    <p class="results-count" id="resultsCount"></p>
+  </section>
+
+  <Footer slot="footer" />
+</Layout>
+
+<style>
+  .page-hero {
+    padding: 40px 0 30px;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border);
+  }
+
+  h1 { font-size: 2.5rem; font-weight: 900; margin-bottom: 8px; }
+  .highlight { color: var(--accent); }
+  .page-hero p { color: var(--text-secondary); font-size: 1.05rem; }
+
+  .filters-section {
+    padding: 24px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .filters {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .filter-btn {
+    padding: 8px 20px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-secondary);
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .filter-btn:hover,
+  .filter-btn.active {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(0, 212, 170, 0.1);
+  }
+
+  .sort-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .sort-row label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+  }
+
+  .sort-row select {
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 0.85rem;
+    cursor: pointer;
+  }
+
+  .results-count {
+    text-align: center;
+    padding: 20px 0;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 768px) {
+    h1 { font-size: 1.8rem; }
+  }
+</style>
+
+<script>
+  const grid = document.getElementById('carsGrid')!;
+  const items = Array.from(grid.querySelectorAll('.car-wrapper')) as HTMLElement[];
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const sortSelect = document.getElementById('sortSelect') as HTMLSelectElement;
+  const countEl = document.getElementById('resultsCount')!;
+
+  let activeCategory = 'all';
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const urlCategory = urlParams.get('category');
+  if (urlCategory) {
+    activeCategory = urlCategory;
+    filterBtns.forEach(b => {
+      b.classList.toggle('active', (b as HTMLElement).dataset.category === urlCategory);
+    });
+  }
+
+  function render() {
+    const sorted = [...items].sort((a, b) => {
+      const v = sortSelect.value;
+      if (v === 'price-low') return +(a.dataset.price!) - +(b.dataset.price!);
+      if (v === 'price-high') return +(b.dataset.price!) - +(a.dataset.price!);
+      if (v === 'range') return +(b.dataset.range!) - +(a.dataset.range!);
+      if (v === 'fastest') return +(a.dataset.accel!) - +(b.dataset.accel!);
+      if (v === 'rating') return +(b.dataset.rating!) - +(a.dataset.rating!);
+      return +(b.dataset.featured!) - +(a.dataset.featured!);
+    });
+
+    let visible = 0;
+    sorted.forEach(el => {
+      const match = activeCategory === 'all' || el.dataset.category === activeCategory;
+      el.style.display = match ? '' : 'none';
+      if (match) visible++;
+      grid.appendChild(el);
+    });
+
+    countEl.textContent = `Showing ${visible} of ${items.length} EVs`;
+  }
+
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeCategory = (btn as HTMLElement).dataset.category || 'all';
+      render();
+    });
+  });
+
+  sortSelect.addEventListener('change', render);
+  render();
+</script>

@@ -1,0 +1,136 @@
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <span class="logo-icon">EV</span>
+          <span>EV<span class="highlight">Scout</span></span>
+        </div>
+        <p class="footer-desc">
+          Your ultimate EV comparison platform. Compare specs, range, pricing, and more to find the perfect electric vehicle.
+        </p>
+      </div>
+
+      <div class="footer-links">
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="/cars">All EVs</a></li>
+          <li><a href="/compare">Compare EVs</a></li>
+          <li><a href="/best">Best EVs</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links">
+        <h4>Categories</h4>
+        <ul>
+          <li><a href="/cars?category=sedan">Sedans</a></li>
+          <li><a href="/cars?category=suv">SUVs</a></li>
+          <li><a href="/cars?category=truck">Trucks</a></li>
+          <li><a href="/cars?category=luxury">Luxury</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="/about">About Us</a></li>
+          <li><a href="/about">Privacy Policy</a></li>
+          <li><a href="/about">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>&copy; 2026 EVScout. All rights reserved.</p>
+      <p class="disclaimer">Specifications are sourced from manufacturers and may vary. Prices shown are base MSRP.</p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--border);
+    padding: 60px 0 30px;
+    margin-top: 80px;
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 40px;
+  }
+
+  .footer-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 900;
+    font-size: 1.2rem;
+    margin-bottom: 12px;
+  }
+
+  .logo-icon {
+    background: var(--accent);
+    color: var(--bg-primary);
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 900;
+  }
+
+  .highlight { color: var(--accent); }
+
+  .footer-desc {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.7;
+  }
+
+  .footer-links h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+
+  .footer-links ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .footer-links a {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover { color: var(--accent); }
+
+  .footer-bottom {
+    border-top: 1px solid var(--border);
+    margin-top: 40px;
+    padding-top: 20px;
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+  }
+
+  .disclaimer {
+    margin-top: 8px;
+    font-size: 0.8rem;
+    opacity: 0.6;
+  }
+
+  @media (max-width: 768px) {
+    .footer-grid {
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+  }
+</style>
